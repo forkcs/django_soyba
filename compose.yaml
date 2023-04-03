@@ -22,4 +22,5 @@ services:
 
   celery_worker:
     <<: *django_base
+    ports: []
     command: bash /app/bin/celery-entrypoint.sh
