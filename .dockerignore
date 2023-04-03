@@ -1,0 +1,7 @@
+*
+!pyproject.toml
+!src/
+!bin/
+!requirements/
+!.add
+**/__pycache__

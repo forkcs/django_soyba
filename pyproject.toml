@@ -1,0 +1,16 @@
+[tool.pytest.ini_options]
+python_files = "tests.py test_*.py *_tests.py"
+norecursedirs = "*.egg .eggs dist build docs .tox .git __pycache__ load_testing"
+filterwarnings= [
+    "ignore::DeprecationWarning"
+]
+addopts = "-v"
+
+[tool.black]
+line-length = 120
+skip-string-normalization = true
+target-version = ['py311']
+
+[tool.isort]
+profile = "black"
+line_length = 120

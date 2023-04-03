@@ -1,0 +1,25 @@
+services:
+  app: &django_base
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    restart: always
+    ports:
+      - "${APP_BIND_PORT:-8000}:${APP_PORT:-8000}"
+    volumes:
+      - ./:/app
+    command: bash /app/bin/app-entrypoint.sh
+
+  postgres:
+    image: postgres:12.2-alpine
+    env_file: .env
+    restart: always
+    ports:
+      - "${POSTGRES_BIND_PORT:-5432}:${POSTGRES_PORT:-5432}"
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+
+  celery_worker:
+    <<: *django_base
+    command: bash /app/bin/celery-entrypoint.sh
