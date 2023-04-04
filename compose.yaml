@@ -9,7 +9,7 @@ services:
       - "${APP_BIND_PORT:-8000}:${APP_PORT:-8000}"
     volumes:
       - ./:/app
-    command: bash /app/bin/app-entrypoint.sh
+    command: python manage.py runserver 0.0.0.0:${APP_PORT:-8000}
 
   postgres:
     image: postgres:12.2-alpine

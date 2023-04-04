@@ -6,7 +6,7 @@ ARG UID=1000
 ARG GID=1000
 
 RUN apt-get update \
-    && apt-get install -qq --no-install-recommends libpq-dev \
+    && apt-get install -qq --no-install-recommends libpq-dev ncat \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* /usr/share/man/* \
     && groupadd -g ${GID} python \

@@ -73,10 +73,6 @@ function shell {
   cmd bash "${@}"
 }
 
-function log {
-  docker compose logs
-}
-
 function logs {
   docker compose logs
 }

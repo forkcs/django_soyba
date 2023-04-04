@@ -17,6 +17,6 @@ python manage.py migrate
 
 # Start the Gunicorn server
 echo "Starting Gunicorn server..."
-gunicorn config.wsgi:application \
+python -m gunicorn config.wsgi:application \
   --bind 0.0.0.0:"$APP_PORT" \
   --log-level=info
