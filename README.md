@@ -15,13 +15,13 @@ This Django-based web application allows users to download data from crypto exch
 ## Installation
 1. Clone the repository
 2. Create a `.env` file in the root directory and set the required environment variables as shown in `.env.example`
-3. Run `docker compose up -d --build` to build and start the containers
-4. Open the web application in your web browser at `http://localhost:8000`
+3. Run `./run up` to build and start the containers
+4. Open the web application in your web browser at `http://localhost:3000`
 
 ## Usage
 1. Connect your exchange API to the application by providing the required API keys and permissions
 2. Select the exchange and data criteria to download data from
-3. Download the data in CSV or Excel format
+3. Download the data in CSV or XSLX format
 4. Analyze and manipulate the data as needed
 
 ## License
