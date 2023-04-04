@@ -12,7 +12,7 @@ services:
     command: python manage.py runserver 0.0.0.0:${APP_PORT:-8000}
 
   postgres:
-    image: postgres:12.2-alpine
+    image: postgres:15.2-alpine
     env_file: .env
     restart: always
     ports:
@@ -23,4 +23,4 @@ services:
   celery_worker:
     <<: *django_base
     ports: []
-    command: bash /app/bin/celery-entrypoint.sh
+    command: /app/bin/celery-entrypoint.sh
