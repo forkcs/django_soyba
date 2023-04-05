@@ -3,3 +3,4 @@ djangorestframework
 celery
 django-celery
 gunicorn
+binance-connector==2.0.0
