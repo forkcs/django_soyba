@@ -4,3 +4,4 @@ celery
 django-celery
 gunicorn
 binance-connector==2.0.0
+pydantic==1.10.7
