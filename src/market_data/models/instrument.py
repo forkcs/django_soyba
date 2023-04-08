@@ -1,12 +1,11 @@
 from django.db import models
 
-from data_sources.models import MarketDataSource
+from data_sources.models import MarketDataSourceChoices
 
 
 class Instrument(models.Model):
     symbol = models.CharField(max_length=255)
-    market_data_source = models.ForeignKey(
-        MarketDataSource,
-        on_delete=models.PROTECT,
-        related_name='instruments',
+    market_data_source = models.CharField(
+        max_length=255,
+        choices=MarketDataSourceChoices.choices,
     )
