@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'data_sources.apps.DataSourcesConfig',
     'files.apps.FilesConfig',
     'users.apps.UsersConfig',
+    'market_data.apps.MarketDataConfig',
+    'api.apps.ApiConfig',
 ]
 
 MIDDLEWARE = [
