@@ -29,18 +29,3 @@ class TimeframeUnit(Enum):
 class Timeframe:
     count: int
     unit: TimeframeUnit
-
-    @classmethod
-    def construct(cls, spec: str) -> "Timeframe":
-        if len(spec) == 0:
-            raise ValueError("`spec` must contain integer and a TimeframeUnit specifier.")
-
-        if spec[-1] not in TimeframeUnit:
-            raise ValueError("`spec` last character must be a TimeframeUnit specifier.")
-
-        try:
-            int(spec[:-1])
-        except:
-            raise ValueError("`spec` must contain integer and a TimeframeUnit specifier.")
-
-        return cls(count=int(spec[:-1]), unit=TimeframeUnit(spec[-1]))
