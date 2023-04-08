@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.conf import settings
 from django.db import models
 
@@ -18,3 +20,7 @@ class OHLC(models.Model):
 
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
+
+    @property
+    def interval(self) -> timedelta:
+        return self.end_time - self.start_time
