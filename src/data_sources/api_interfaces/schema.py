@@ -46,3 +46,6 @@ class Timeframe:
             return timedelta(days=self.count * 30)
         elif self.unit == TimeframeUnit.YEAR:
             return timedelta(days=self.count * 365)
+
+    def __gt__(self, other):
+        return self.interval > other.interval
