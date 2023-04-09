@@ -14,7 +14,7 @@ class BinanceInterface(DataSourceInterface):
     def __init__(self):
         self.client = Spot()
 
-    def get_ohlc(self, *, symbol: str, timeframe: Timeframe, count: int, start_datetime: datetime) -> tuple[OHLC, ...]:
+    def get_ohlc(self, *, symbol: str, timeframe: Timeframe, count: int, start_datetime: datetime) -> tuple[OHLC]:
         formatted_timeframe = format_binance_timeframe(timeframe)
 
         raw_ohlc_list: tuple[BinanceOHLC] = self.client.klines(
