@@ -15,7 +15,7 @@ class KrakenInterface(DataSourceInterface):
 
     @staticmethod
     def _construct_ohlc(raw_ohlc: KrakenOHLC) -> OHLC:
-        """ Not sure if it's correct """
+        """Not sure if it's correct"""
         return OHLC(
             open=Decimal(raw_ohlc[1]),
             high=Decimal(raw_ohlc[2]),
@@ -27,12 +27,12 @@ class KrakenInterface(DataSourceInterface):
     @staticmethod
     def _minutes_from_timeframe(timeframe: Timeframe) -> float:
         MINUTES_BY_UNIT = {
-            TimeframeUnit.SECOND: 1/60,
+            TimeframeUnit.SECOND: 1 / 60,
             TimeframeUnit.MINUTE: 1,
             TimeframeUnit.HOUR: 60,
-            TimeframeUnit.DAY: 24*60,
-            TimeframeUnit.MONTH: 24*60*30,
-            TimeframeUnit.YEAR: 24*60*365,
+            TimeframeUnit.DAY: 24 * 60,
+            TimeframeUnit.MONTH: 24 * 60 * 30,
+            TimeframeUnit.YEAR: 24 * 60 * 365,
         }
 
         try:
@@ -60,4 +60,3 @@ class KrakenInterface(DataSourceInterface):
             Timeframe(count=10080, unit=TimeframeUnit.MINUTE),
             Timeframe(count=21600, unit=TimeframeUnit.MINUTE),
         )
-
