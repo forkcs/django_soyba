@@ -11,13 +11,13 @@ def test_binance_get_ohlc_returns_valid_ohlc(mocker: MockerFixture) -> None:
     klines_mock = mocker.patch("binance.spot.Spot.klines")
     klines_mock.return_value = (
         (
-            1499040000000,
-            "0.01634790",
-            "0.80000000",
-            "0.01575800",
-            "0.01577100",
+            start_time := 1499040000000,
+            open := "0.01634790",
+            high := "0.80000000",
+            low := "0.01575800",
+            close := "0.01577100",
             "148976.11427815",
-            1499644799999,
+            end_time := 1499644799999,
             "2434.19055334",
             308,
             "1756.87402397",
@@ -33,9 +33,9 @@ def test_binance_get_ohlc_returns_valid_ohlc(mocker: MockerFixture) -> None:
     assert len(ohlc_tuple) == 1
     ohlc: OHLC = ohlc_tuple[0]
 
-    assert Decimal.compare(ohlc.open, Decimal("0.01634790")) == 0
-    assert Decimal.compare(ohlc.high, Decimal("0.80000000")) == 0
-    assert Decimal.compare(ohlc.low, Decimal("0.01575800")) == 0
-    assert Decimal.compare(ohlc.close, Decimal("0.01577100")) == 0
-    assert ohlc.start_time == datetime.fromtimestamp(1499040000000 / 1000)
-    assert ohlc.end_time == datetime.fromtimestamp(1499644799999 / 1000)
+    assert ohlc.open.compare(Decimal(open)) == 0
+    assert ohlc.high.compare(Decimal(high)) == 0
+    assert ohlc.low.compare(Decimal(low)) == 0
+    assert ohlc.close.compare(Decimal(close)) == 0
+    assert ohlc.start_time == datetime.fromtimestamp(start_time / 1000)
+    assert ohlc.end_time == datetime.fromtimestamp(end_time / 1000)
