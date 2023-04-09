@@ -6,7 +6,7 @@ from kraken.spot import Market
 
 from ..base.interface import DataSourceInterface
 from ..schema import OHLC, Timeframe, TimeframeUnit
-from .types import KrakenOHLC
+from .types import KrakenInstrument, KrakenOHLC
 
 
 class KrakenInterface(DataSourceInterface):
@@ -48,7 +48,12 @@ class KrakenInterface(DataSourceInterface):
         return tuple(map(self._construct_ohlc, raw_ohlc_list))
 
     def get_available_instruments(self) -> Iterable[str]:
-        return self.market.get_assets().keys()
+        def instrument_is_active(instrument: KrakenInstrument) -> bool:
+            return instrument["status"] == "enabled"
+
+        raw_instruments: dict[str, KrakenInstrument] = self.market.get_assets()
+        instruments = (i_name for i_name, i_value in raw_instruments.items() if instrument_is_active(i_value))
+        return instruments
 
     def get_available_timeframes(self) -> Iterable[Timeframe]:
         return (
