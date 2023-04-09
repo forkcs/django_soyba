@@ -41,9 +41,10 @@ class KrakenInterface(DataSourceInterface):
             raise ValueError("Unknown TimeframeUnit value")
 
     def get_ohlc(self, *, symbol: str, timeframe: Timeframe, count: int, start_datetime: datetime) -> tuple[OHLC]:
-        raw_ohlc_list: list[KrakenOHLC] = self.market.get_ohlc(
+        raw_ohlc_dict: dict[str, list[KrakenOHLC]] = self.market.get_ohlc(
             symbol, int(self._minutes_from_timeframe(timeframe)), int(start_datetime.timestamp())
-        )["result"][symbol][:count]
+        )
+        raw_ohlc_list: list[KrakenOHLC] = raw_ohlc_dict[tuple(raw_ohlc_dict.keys())[0]][:count]
         return tuple(map(self._construct_ohlc, raw_ohlc_list))
 
     def get_available_instruments(self) -> Iterable[str]:
