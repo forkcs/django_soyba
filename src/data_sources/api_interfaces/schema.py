@@ -45,3 +45,6 @@ class Timeframe:
             return TIMEDELTA_BY_UNIT[self.unit]
         except KeyError:
             raise ValueError("Unknown TimeframeUnit value")
+
+    def __hash__(self) -> int:
+        return self.interval.seconds
