@@ -31,18 +31,33 @@ class Timeframe:
     unit: TimeframeUnit
 
     @property
+    def minutes(self) -> float:
+        MINUTES_BY_UNIT = {
+            TimeframeUnit.SECOND: 1/60,
+            TimeframeUnit.MINUTE: 1,
+            TimeframeUnit.HOUR: 60,
+            TimeframeUnit.DAY: 24*60,
+            TimeframeUnit.MONTH: 24*60*30,
+            TimeframeUnit.YEAR: 24*60*365,
+        }
+
+        try:
+            return self.count * MINUTES_BY_UNIT[self.unit]
+        except KeyError:
+            raise ValueError("Unknown TimeframeUnit value")
+
+    @property
     def interval(self) -> timedelta:
-        if self.unit == TimeframeUnit.SECOND:
-            return timedelta(seconds=self.count)
-        elif self.unit == TimeframeUnit.MINUTE:
-            return timedelta(minutes=self.count)
-        elif self.unit == TimeframeUnit.HOUR:
-            return timedelta(hours=self.count)
-        elif self.unit == TimeframeUnit.DAY:
-            return timedelta(days=self.count)
-        elif self.unit == TimeframeUnit.WEEK:
-            return timedelta(weeks=self.count)
-        elif self.unit == TimeframeUnit.MONTH:
-            return timedelta(days=self.count * 30)
-        elif self.unit == TimeframeUnit.YEAR:
-            return timedelta(days=self.count * 365)
+        TIMEDELTA_BY_UNIT = {
+            TimeframeUnit.SECOND: timedelta(seconds=self.count),
+            TimeframeUnit.MINUTE: timedelta(minutes=self.count),
+            TimeframeUnit.HOUR: timedelta(hours=self.count),
+            TimeframeUnit.DAY: timedelta(days=self.count),
+            TimeframeUnit.MONTH: timedelta(days=self.count * 30),
+            TimeframeUnit.YEAR: timedelta(days=self.count * 365),
+        }
+
+        try:
+            return TIMEDELTA_BY_UNIT[self.unit]
+        except KeyError:
+            raise ValueError("Unknown TimeframeUnit value")
