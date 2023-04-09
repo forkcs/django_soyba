@@ -31,22 +31,6 @@ class Timeframe:
     unit: TimeframeUnit
 
     @property
-    def minutes(self) -> float:
-        MINUTES_BY_UNIT = {
-            TimeframeUnit.SECOND: 1/60,
-            TimeframeUnit.MINUTE: 1,
-            TimeframeUnit.HOUR: 60,
-            TimeframeUnit.DAY: 24*60,
-            TimeframeUnit.MONTH: 24*60*30,
-            TimeframeUnit.YEAR: 24*60*365,
-        }
-
-        try:
-            return self.count * MINUTES_BY_UNIT[self.unit]
-        except KeyError:
-            raise ValueError("Unknown TimeframeUnit value")
-
-    @property
     def interval(self) -> timedelta:
         TIMEDELTA_BY_UNIT = {
             TimeframeUnit.SECOND: timedelta(seconds=self.count),
