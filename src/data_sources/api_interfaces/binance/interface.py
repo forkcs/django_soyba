@@ -1,3 +1,4 @@
+from collections.abc import Iterable
 from datetime import datetime
 from decimal import Decimal
 
@@ -6,7 +7,7 @@ from binance.spot import Spot
 from ..base.interface import DataSourceInterface
 from ..binance.types import BinanceOHLC
 from ..binance.utils import format_binance_timeframe
-from ..schema import OHLC, Timeframe
+from ..schema import OHLC, Timeframe, TimeframeUnit
 
 
 class BinanceInterface(DataSourceInterface):
@@ -16,7 +17,7 @@ class BinanceInterface(DataSourceInterface):
     def get_ohlc(self, *, symbol: str, timeframe: Timeframe, count: int, start_datetime: datetime) -> tuple[OHLC, ...]:
         formatted_timeframe = format_binance_timeframe(timeframe)
 
-        raw_ohlc_list: list[BinanceOHLC] = self.client.klines(
+        raw_ohlc_list: tuple[BinanceOHLC] = self.client.klines(
             symbol,
             formatted_timeframe,
             limit=count,
@@ -34,4 +35,34 @@ class BinanceInterface(DataSourceInterface):
             close=Decimal(raw_ohlc[4]),
             start_time=datetime.fromtimestamp(raw_ohlc[0] / 1000),
             end_time=datetime.fromtimestamp(raw_ohlc[6] / 1000),
+        )
+
+    def get_available_instruments(self) -> Iterable[str]:
+        def instrument_is_active(instrument):
+            return instrument['status'] == 'TRADING'
+
+        def instrument_get_symbol(instrument):
+            return instrument['symbol']
+
+        instruments = filter(instrument_is_active, self.client.exchange_info(permissions=['SPOT']))
+        return map(instrument_get_symbol, instruments)
+
+    def get_available_timeframes(self) -> Iterable[Timeframe]:
+        return (
+            Timeframe(count=1, unit=TimeframeUnit.SECOND),
+            Timeframe(count=1, unit=TimeframeUnit.MINUTE),
+            Timeframe(count=3, unit=TimeframeUnit.MINUTE),
+            Timeframe(count=5, unit=TimeframeUnit.MINUTE),
+            Timeframe(count=15, unit=TimeframeUnit.MINUTE),
+            Timeframe(count=30, unit=TimeframeUnit.MINUTE),
+            Timeframe(count=1, unit=TimeframeUnit.HOUR),
+            Timeframe(count=2, unit=TimeframeUnit.HOUR),
+            Timeframe(count=4, unit=TimeframeUnit.HOUR),
+            Timeframe(count=6, unit=TimeframeUnit.HOUR),
+            Timeframe(count=8, unit=TimeframeUnit.HOUR),
+            Timeframe(count=12, unit=TimeframeUnit.HOUR),
+            Timeframe(count=1, unit=TimeframeUnit.DAY),
+            Timeframe(count=3, unit=TimeframeUnit.DAY),
+            Timeframe(count=1, unit=TimeframeUnit.WEEK),
+            Timeframe(count=1, unit=TimeframeUnit.MONTH),
         )
