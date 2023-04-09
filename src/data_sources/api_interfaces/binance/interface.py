@@ -44,7 +44,8 @@ class BinanceInterface(DataSourceInterface):
         def instrument_get_symbol(instrument):
             return instrument['symbol']
 
-        instruments = filter(instrument_is_active, self.client.exchange_info(permissions=['SPOT']))
+        raw_instruments = self.client.exchange_info(permissions=["SPOT"])["symbols"]
+        instruments = filter(instrument_is_active, raw_instruments)
         return map(instrument_get_symbol, instruments)
 
     def get_available_timeframes(self) -> Iterable[Timeframe]:
