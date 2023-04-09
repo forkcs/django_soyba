@@ -1,4 +1,3 @@
-from collections.abc import Iterable
 from datetime import datetime
 from decimal import Decimal
 
@@ -37,7 +36,7 @@ class BinanceInterface(DataSourceInterface):
             end_time=datetime.fromtimestamp(raw_ohlc[6] / 1000),
         )
 
-    def get_available_instruments(self) -> Iterable[str]:
+    def get_available_instruments(self) -> tuple[str, ...]:
         def instrument_is_active(instrument):
             return instrument['status'] == 'TRADING'
 
@@ -46,9 +45,9 @@ class BinanceInterface(DataSourceInterface):
 
         raw_instruments = self.client.exchange_info(permissions=["SPOT"])["symbols"]
         instruments = filter(instrument_is_active, raw_instruments)
-        return map(instrument_get_symbol, instruments)
+        return tuple(map(instrument_get_symbol, instruments))
 
-    def get_available_timeframes(self) -> Iterable[Timeframe]:
+    def get_available_timeframes(self) -> tuple[Timeframe, ...]:
         return (
             Timeframe(count=1, unit=TimeframeUnit.SECOND),
             Timeframe(count=1, unit=TimeframeUnit.MINUTE),
