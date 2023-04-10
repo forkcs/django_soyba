@@ -1,4 +1,3 @@
-import os
 from datetime import datetime
 from decimal import Decimal
 
@@ -12,8 +11,7 @@ from ..schema import OHLC, Timeframe, TimeframeUnit
 
 class BybitInterface(DataSourceInterface):
     def __init__(self):
-        self.session = HTTP(api_key=os.getenv("BYBIT_API_KEY"), api_secret=os.getenv("BYBIT_API_SECRET"))
-        ...
+        self.session = HTTP()
 
     @staticmethod
     def _construct_ohlc(raw_ohlc: BybitOHLC) -> OHLC:
@@ -38,16 +36,29 @@ class BybitInterface(DataSourceInterface):
         }
         return float(timeframe.count * MINUTE_BY_UNIT[timeframe.unit])
 
+    def _get_instruments_info(self, *args, **kwargs) -> dict:
+        """This method is just a workaround of invalid return type hint of `pybit.HTTP.get_instruments_info`."""
+        return self.session.get_instruments_info(*args, **kwargs)  # type: ignore
+
     def get_ohlc(self, *, symbol: str, timeframe: Timeframe, count: int, start_datetime: datetime) -> tuple[OHLC, ...]:
         minutes: float = self._minutes_from_timeframe(timeframe)
-        raw_ohlc_list = self.session.get_kline(category='spot', symbol=symbol, interval=f'{minutes}')
+        raw_ohlc_list: dict = self.session.get_kline(
+            category='spot', symbol=symbol, interval=f'{minutes}', limit=count, start=start_datetime.timestamp()
+        )["result"]["list"]
         return tuple(map(self._construct_ohlc, raw_ohlc_list))
 
     def get_available_instruments(self) -> tuple[str, ...]:
-        ...
+        def instrument_is_active(instrument: dict) -> bool:
+            return instrument["status"] == "Trading"
+
+        def instrument_get_symbol(instrument: dict) -> str:
+            return instrument["symbol"]
+
+        raw_instruments = self._get_instruments_info(category='spot')["results"]
+        return tuple(map(instrument_get_symbol, filter(instrument_is_active, raw_instruments)))
 
     def get_available_timeframes(self) -> tuple[Timeframe, ...]:
-        """There are also days (D), weeks (W) and months (M), not sure how to return them."""
+        """Not sure about days, weeks, and months"""
         return (
             Timeframe(count=1, unit=TimeframeUnit.MINUTE),
             Timeframe(count=3, unit=TimeframeUnit.MINUTE),
@@ -59,4 +70,7 @@ class BybitInterface(DataSourceInterface):
             Timeframe(count=240, unit=TimeframeUnit.MINUTE),
             Timeframe(count=360, unit=TimeframeUnit.MINUTE),
             Timeframe(count=720, unit=TimeframeUnit.MINUTE),
+            Timeframe(count=1, unit=TimeframeUnit.DAY),
+            Timeframe(count=1, unit=TimeframeUnit.WEEK),
+            Timeframe(count=1, unit=TimeframeUnit.MONTH),
         )
