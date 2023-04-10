@@ -20,7 +20,7 @@ class BybitInterface(DataSourceInterface):
             high=Decimal(raw_ohlc[2]),
             low=Decimal(raw_ohlc[3]),
             close=Decimal(raw_ohlc[4]),
-            start_time=datetime.fromtimestamp(float(raw_ohlc[0])),
+            start_time=datetime.fromtimestamp(float(raw_ohlc[0]) / 1000),
         )
 
     @staticmethod
@@ -54,7 +54,7 @@ class BybitInterface(DataSourceInterface):
         def instrument_get_symbol(instrument: dict) -> str:
             return instrument["symbol"]
 
-        raw_instruments = self._get_instruments_info(category='spot')["results"]["list"]
+        raw_instruments = self._get_instruments_info(category='spot')["result"]["list"]
         return tuple(map(instrument_get_symbol, filter(instrument_is_active, raw_instruments)))
 
     def get_available_timeframes(self) -> tuple[Timeframe, ...]:
