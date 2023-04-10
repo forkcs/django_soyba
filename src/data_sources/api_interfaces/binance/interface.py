@@ -1,4 +1,3 @@
-from collections.abc import Iterable
 from datetime import datetime
 from decimal import Decimal
 
@@ -14,7 +13,7 @@ class BinanceInterface(DataSourceInterface):
     def __init__(self):
         self.client = Spot()
 
-    def get_ohlc(self, *, symbol: str, timeframe: Timeframe, count: int, start_datetime: datetime) -> tuple[OHLC, ...]:
+    def get_ohlc(self, *, symbol: str, timeframe: Timeframe, count: int, start_datetime: datetime) -> tuple[OHLC]:
         formatted_timeframe = format_binance_timeframe(timeframe)
 
         raw_ohlc_list: tuple[BinanceOHLC] = self.client.klines(
@@ -37,17 +36,18 @@ class BinanceInterface(DataSourceInterface):
             end_time=datetime.fromtimestamp(raw_ohlc[6] / 1000),
         )
 
-    def get_available_instruments(self) -> Iterable[str]:
+    def get_available_instruments(self) -> tuple[str, ...]:
         def instrument_is_active(instrument):
             return instrument['status'] == 'TRADING'
 
         def instrument_get_symbol(instrument):
             return instrument['symbol']
 
-        instruments = filter(instrument_is_active, self.client.exchange_info(permissions=['SPOT']))
-        return map(instrument_get_symbol, instruments)
+        raw_instruments = self.client.exchange_info(permissions=["SPOT"])["symbols"]
+        instruments = filter(instrument_is_active, raw_instruments)
+        return tuple(map(instrument_get_symbol, instruments))
 
-    def get_available_timeframes(self) -> Iterable[Timeframe]:
+    def get_available_timeframes(self) -> tuple[Timeframe, ...]:
         return (
             Timeframe(count=1, unit=TimeframeUnit.SECOND),
             Timeframe(count=1, unit=TimeframeUnit.MINUTE),
