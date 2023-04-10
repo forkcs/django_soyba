@@ -14,13 +14,14 @@ class BybitInterface(DataSourceInterface):
         self.session = HTTP()
 
     @staticmethod
-    def _construct_ohlc(raw_ohlc: BybitOHLC) -> OHLC:
+    def _construct_ohlc(raw_ohlc: BybitOHLC, end_time: datetime) -> OHLC:
         return OHLC(
             open=Decimal(raw_ohlc[1]),
             high=Decimal(raw_ohlc[2]),
             low=Decimal(raw_ohlc[3]),
             close=Decimal(raw_ohlc[4]),
             start_time=datetime.fromtimestamp(float(raw_ohlc[0]) / 1000),
+            end_time=end_time,
         )
 
     @staticmethod
@@ -42,10 +43,12 @@ class BybitInterface(DataSourceInterface):
 
     def get_ohlc(self, *, symbol: str, timeframe: Timeframe, count: int, start_datetime: datetime) -> tuple[OHLC, ...]:
         minutes: float = self._minutes_from_timeframe(timeframe)
-        raw_ohlc_list: dict = self.session.get_kline(
+        raw_ohlc_response: dict = self.session.get_kline(
             category='spot', symbol=symbol, interval=f'{minutes}', limit=count, start=start_datetime.timestamp()
-        )["result"]["list"]
-        return tuple(map(self._construct_ohlc, raw_ohlc_list))
+        )
+        end_time: datetime = datetime.fromtimestamp(float(raw_ohlc_response["time"]) / 1000)
+        raw_ohlc_list: list = raw_ohlc_response["result"]["list"]
+        return tuple(self._construct_ohlc(raw_ohlc, end_time) for raw_ohlc in raw_ohlc_list)
 
     def get_available_instruments(self) -> tuple[str, ...]:
         def instrument_is_active(instrument: dict) -> bool:
