@@ -1,4 +1,6 @@
 -r base.txt
 
 pytest
+pytest-mock
 black
+hypothesis[django]

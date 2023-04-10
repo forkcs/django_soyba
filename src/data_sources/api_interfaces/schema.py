@@ -32,7 +32,7 @@ class Timeframe:
 
     @property
     def interval(self) -> timedelta:
-        TIMEDELTA_BY_UNIT = {
+        timedelta_by_unit = {
             TimeframeUnit.SECOND: timedelta(seconds=self.count),
             TimeframeUnit.MINUTE: timedelta(minutes=self.count),
             TimeframeUnit.HOUR: timedelta(hours=self.count),
@@ -41,7 +41,7 @@ class Timeframe:
             TimeframeUnit.YEAR: timedelta(days=self.count * 365),
         }
 
-        try:
-            return TIMEDELTA_BY_UNIT[self.unit]
-        except KeyError:
-            raise ValueError("Unknown TimeframeUnit value")
+        return timedelta_by_unit[self.unit]
+
+    def __gt__(self, other):
+        return self.interval > other.interval
