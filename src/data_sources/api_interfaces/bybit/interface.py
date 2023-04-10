@@ -54,7 +54,7 @@ class BybitInterface(DataSourceInterface):
         def instrument_get_symbol(instrument: dict) -> str:
             return instrument["symbol"]
 
-        raw_instruments = self._get_instruments_info(category='spot')["results"]
+        raw_instruments = self._get_instruments_info(category='spot')["results"]["list"]
         return tuple(map(instrument_get_symbol, filter(instrument_is_active, raw_instruments)))
 
     def get_available_timeframes(self) -> tuple[Timeframe, ...]:
