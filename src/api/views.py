@@ -1,8 +1,8 @@
 from rest_framework import viewsets
 
 from api.serializers import InstrumentSerializer, OHLCSerializer
-from data_sources.api_interfaces.schema import OHLC
 from market_data.models.instrument import Instrument
+from market_data.models.ohlc import OHLC
 
 
 class InstrumentsViewSet(viewsets.ModelViewSet):
@@ -14,4 +14,4 @@ class InstrumentsViewSet(viewsets.ModelViewSet):
 class OHLCViewSet(viewsets.ModelViewSet):
     model = OHLC
     serializer_class = OHLCSerializer
-    queryset = Instrument.objects.all()
+    queryset = OHLC.objects.all()
