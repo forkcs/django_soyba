@@ -21,6 +21,3 @@ class MarketDataFetcher:
         instruments_seq = interface.get_available_instruments()
         for instrument in instruments_seq:
             Instrument(instrument).save()
-
-    def fetch_available_timeframes(self, data_source_name: str) -> None:
-        ...
