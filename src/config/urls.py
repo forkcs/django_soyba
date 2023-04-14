@@ -23,4 +23,7 @@ router = routers.DefaultRouter()
 router.register(r'instruments', InstrumentsViewSet)
 router.register(r'ohlc', OHLCViewSet)
 
-urlpatterns = [path('admin/', admin.site.urls), path('api/', include(router.urls))]
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/', include(router.urls)),
+]
