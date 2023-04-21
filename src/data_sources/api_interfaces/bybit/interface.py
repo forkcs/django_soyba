@@ -21,7 +21,6 @@ class BybitInterface(DataSourceInterface):
             low=Decimal(raw_ohlc[3]),
             close=Decimal(raw_ohlc[4]),
             start_time=datetime.fromtimestamp(float(raw_ohlc[0]) / 1000),
-            end_time=end_time,
         )
 
     @staticmethod
