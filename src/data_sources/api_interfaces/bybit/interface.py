@@ -1,7 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 
-from pybit.unified_trading import HTTP
+from pybit.unified_trading import HTTP as PybitSession
 
 from data_sources.api_interfaces.bybit.types import BybitOHLC
 
@@ -11,7 +11,7 @@ from ..schema import OHLC, Timeframe, TimeframeUnit
 
 class BybitInterface(DataSourceInterface):
     def __init__(self):
-        self.session = HTTP()
+        self.session = PybitSession()
 
     @staticmethod
     def _construct_ohlc(raw_ohlc: BybitOHLC, end_time: datetime) -> OHLC:
@@ -21,33 +21,21 @@ class BybitInterface(DataSourceInterface):
             low=Decimal(raw_ohlc[3]),
             close=Decimal(raw_ohlc[4]),
             start_time=datetime.fromtimestamp(float(raw_ohlc[0]) / 1000),
+            end_time=end_time,
         )
-
-    @staticmethod
-    def _minutes_from_timeframe(timeframe: Timeframe) -> float:
-        MINUTE_BY_UNIT: dict[TimeframeUnit, float] = {
-            TimeframeUnit.SECOND: 1 / 60.0,
-            TimeframeUnit.MINUTE: 1.0,
-            TimeframeUnit.HOUR: 60.0,
-            TimeframeUnit.DAY: 24 * 60.0,
-            TimeframeUnit.WEEK: 7 * 24 * 60.0,
-            TimeframeUnit.MONTH: 30 * 24 * 60.0,
-            TimeframeUnit.YEAR: 356 * 24 * 60.0,
-        }
-        return float(timeframe.count * MINUTE_BY_UNIT[timeframe.unit])
 
     def _get_instruments_info(self, *args, **kwargs) -> dict:
         """This method is just a workaround of invalid return type hint of `pybit.HTTP.get_instruments_info`."""
         return self.session.get_instruments_info(*args, **kwargs)  # type: ignore
 
     def get_ohlc(self, *, symbol: str, timeframe: Timeframe, count: int, start_datetime: datetime) -> tuple[OHLC, ...]:
-        minutes: float = self._minutes_from_timeframe(timeframe)
-        raw_ohlc_response: dict = self.session.get_kline(
+        minutes = timeframe.interval.seconds / 60
+        raw_ohlc_response = self.session.get_kline(
             category='spot', symbol=symbol, interval=f'{minutes}', limit=count, start=start_datetime.timestamp()
         )
-        end_time: datetime = datetime.fromtimestamp(float(raw_ohlc_response["time"]) / 1000)
-        raw_ohlc_list: list = raw_ohlc_response["result"]["list"]
-        return tuple(self._construct_ohlc(raw_ohlc, end_time) for raw_ohlc in raw_ohlc_list)
+        end_times = tuple(start_datetime + (i + 1) * timeframe.interval for i in range(count))
+        raw_ohlc_list = raw_ohlc_response["result"]["list"]
+        return tuple(self._construct_ohlc(raw_ohlc_list[i], end_times[i]) for i in range(count))
 
     def get_available_instruments(self) -> tuple[str, ...]:
         def instrument_is_active(instrument: dict) -> bool:
