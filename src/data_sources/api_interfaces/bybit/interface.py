@@ -10,6 +10,8 @@ from ..schema import OHLC, Timeframe, TimeframeUnit
 
 
 class BybitInterface(DataSourceInterface):
+    max_ohlc_per_request = 200
+
     def __init__(self):
         self.session = PybitSession()
 
@@ -28,7 +30,9 @@ class BybitInterface(DataSourceInterface):
         """This method is just a workaround of invalid return type hint of `pybit.HTTP.get_instruments_info`."""
         return self.session.get_instruments_info(*args, **kwargs)  # type: ignore
 
-    def get_ohlc(self, *, symbol: str, timeframe: Timeframe, count: int, start_datetime: datetime) -> tuple[OHLC, ...]:
+    def get_ohlc_batch(
+        self, *, symbol: str, timeframe: Timeframe, count: int, start_datetime: datetime
+    ) -> tuple[OHLC, ...]:
         minutes = timeframe.interval.seconds / 60
         raw_ohlc_response = self.session.get_kline(
             category='spot', symbol=symbol, interval=f'{minutes}', limit=count, start=start_datetime.timestamp()
