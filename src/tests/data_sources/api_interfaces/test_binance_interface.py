@@ -12,7 +12,7 @@ def test_get_ohlc_returns_valid_ohlc(mocker: MockerFixture) -> None:
     klines_mock.return_value = (
         (
             start_time := 1499040000000,
-            open := "0.01634790",
+            open_ := "0.01634790",
             high := "0.80000000",
             low := "0.01575800",
             close := "0.01577100",
@@ -33,7 +33,7 @@ def test_get_ohlc_returns_valid_ohlc(mocker: MockerFixture) -> None:
     assert len(ohlc_tuple) == 1
     ohlc: OHLC = ohlc_tuple[0]
 
-    assert ohlc.open.compare(Decimal(open)) == 0
+    assert ohlc.open.compare(Decimal(open_)) == 0
     assert ohlc.high.compare(Decimal(high)) == 0
     assert ohlc.low.compare(Decimal(low)) == 0
     assert ohlc.close.compare(Decimal(close)) == 0
