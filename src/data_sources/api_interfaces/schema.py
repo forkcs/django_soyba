@@ -12,7 +12,7 @@ class OHLC:
     high: Decimal
 
     start_time: datetime
-    end_time: datetime | None = None
+    end_time: datetime
 
 
 class TimeframeUnit(Enum):
