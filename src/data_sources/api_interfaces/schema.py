@@ -37,6 +37,7 @@ class Timeframe:
             TimeframeUnit.MINUTE: timedelta(minutes=self.count),
             TimeframeUnit.HOUR: timedelta(hours=self.count),
             TimeframeUnit.DAY: timedelta(days=self.count),
+            TimeframeUnit.WEEK: timedelta(days=self.count * 7),
             TimeframeUnit.MONTH: timedelta(days=self.count * 30),
             TimeframeUnit.YEAR: timedelta(days=self.count * 365),
         }
