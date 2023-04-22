@@ -43,5 +43,5 @@ class Timeframe:
 
         return timedelta_by_unit[self.unit]
 
-    def __gt__(self, other):
-        return self.interval > other.interval
+    def __lt__(self, other):
+        return self.interval < other.interval
