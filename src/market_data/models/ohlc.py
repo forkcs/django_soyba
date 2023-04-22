@@ -24,3 +24,11 @@ class OHLC(models.Model):
     @property
     def interval(self) -> timedelta:
         return self.end_time - self.start_time
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['instrument', 'start_time', 'end_time'],
+                name='unique_ohlc',
+            ),
+        ]
