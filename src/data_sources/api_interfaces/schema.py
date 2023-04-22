@@ -12,7 +12,7 @@ class OHLC:
     high: Decimal
 
     start_time: datetime
-    end_time: datetime | None = None
+    end_time: datetime
 
 
 class TimeframeUnit(Enum):
@@ -37,11 +37,12 @@ class Timeframe:
             TimeframeUnit.MINUTE: timedelta(minutes=self.count),
             TimeframeUnit.HOUR: timedelta(hours=self.count),
             TimeframeUnit.DAY: timedelta(days=self.count),
+            TimeframeUnit.WEEK: timedelta(days=self.count * 7),
             TimeframeUnit.MONTH: timedelta(days=self.count * 30),
             TimeframeUnit.YEAR: timedelta(days=self.count * 365),
         }
 
         return timedelta_by_unit[self.unit]
 
-    def __gt__(self, other):
-        return self.interval > other.interval
+    def __lt__(self, other):
+        return self.interval < other.interval

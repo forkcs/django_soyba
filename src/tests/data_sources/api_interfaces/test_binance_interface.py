@@ -1,6 +1,9 @@
 from datetime import datetime
 from decimal import Decimal
+from unittest import mock
 
+from hypothesis import assume, given
+from hypothesis import strategies as st
 from pytest_mock import MockerFixture
 
 from data_sources.api_interfaces.binance.interface import BinanceInterface
@@ -12,7 +15,7 @@ def test_get_ohlc_returns_valid_ohlc(mocker: MockerFixture) -> None:
     klines_mock.return_value = (
         (
             start_time := 1499040000000,
-            open := "0.01634790",
+            open_ := "0.01634790",
             high := "0.80000000",
             low := "0.01575800",
             close := "0.01577100",
@@ -33,7 +36,7 @@ def test_get_ohlc_returns_valid_ohlc(mocker: MockerFixture) -> None:
     assert len(ohlc_tuple) == 1
     ohlc: OHLC = ohlc_tuple[0]
 
-    assert ohlc.open.compare(Decimal(open)) == 0
+    assert ohlc.open.compare(Decimal(open_)) == 0
     assert ohlc.high.compare(Decimal(high)) == 0
     assert ohlc.low.compare(Decimal(low)) == 0
     assert ohlc.close.compare(Decimal(close)) == 0
@@ -123,3 +126,52 @@ def test_get_available_instruments_returns_one_available_instrument_when_others_
     instruments: tuple[str] = tuple(BinanceInterface().get_available_instruments())
     assert len(instruments) == 1
     assert instruments[0] == symbol
+
+
+ohlc_strategy = st.tuples(
+    st.datetimes().map(lambda dt: int(dt.timestamp() * 1000)),
+    st.decimals(allow_nan=False, allow_infinity=False, min_value=0).map(str),
+    st.decimals(allow_nan=False, allow_infinity=False, min_value=0).map(str),
+    st.decimals(allow_nan=False, allow_infinity=False, min_value=0).map(str),
+    st.decimals(allow_nan=False, allow_infinity=False, min_value=0).map(str),
+    st.decimals(allow_nan=False, allow_infinity=False, min_value=0).map(str),
+    st.datetimes().map(lambda dt: int(dt.timestamp() * 1000)),
+    st.decimals(allow_nan=False, allow_infinity=False, min_value=0).map(str),
+    st.integers(min_value=0),
+    st.decimals(allow_nan=False, allow_infinity=False, min_value=0).map(str),
+    st.decimals(allow_nan=False, allow_infinity=False, min_value=0).map(str),
+    st.just('0'),
+).map(list)
+
+
+@given(
+    raw_ohlc_list=st.lists(ohlc_strategy),
+    symbol=st.from_regex(r'[A-Z_0-9]{2,10}'),
+    timeframe=st.builds(Timeframe, count=st.integers(min_value=1, max_value=400), unit=st.sampled_from(TimeframeUnit)),
+    count=st.integers(max_value=1_000_000),
+    start_datetime=st.datetimes(),
+)
+def test_get_ohlc(raw_ohlc_list: list[list], symbol: str, timeframe: Timeframe, count: int, start_datetime: datetime):
+    assume(count <= len(raw_ohlc_list))
+
+    with mock.patch('binance.spot.Spot.klines') as klines_mock:
+        klines_mock.return_value = raw_ohlc_list
+
+        ohlc_list = BinanceInterface().get_ohlc(
+            symbol=symbol,
+            timeframe=timeframe,
+            count=count,
+            start_datetime=start_datetime,
+        )
+
+        assert len(ohlc_list) == max(count, 0)
+
+        for ohlc, raw_ohlc in zip(ohlc_list, raw_ohlc_list):
+            assert isinstance(ohlc, OHLC)
+
+            assert ohlc.open == Decimal(raw_ohlc[1])
+            assert ohlc.high == Decimal(raw_ohlc[2])
+            assert ohlc.low == Decimal(raw_ohlc[3])
+            assert ohlc.close == Decimal(raw_ohlc[4])
+            assert ohlc.start_time == datetime.fromtimestamp(raw_ohlc[0] / 1000)
+            assert ohlc.end_time == datetime.fromtimestamp(raw_ohlc[6] / 1000)

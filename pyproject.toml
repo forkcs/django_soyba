@@ -4,7 +4,7 @@ norecursedirs = "*.egg .eggs dist build docs .tox .git __pycache__ load_testing"
 filterwarnings= [
     "ignore::DeprecationWarning"
 ]
-addopts = "-v"
+addopts = "-v -s"
 
 [tool.black]
 line-length = 120
