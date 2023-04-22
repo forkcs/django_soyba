@@ -73,6 +73,11 @@ function shell {
   cmd bash "${@}"
 }
 
+function manage {
+  # Run Django management commands
+  cmd python manage.py "${@}"
+}
+
 function logs {
   docker compose logs
 }
