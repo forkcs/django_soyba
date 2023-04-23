@@ -3,7 +3,7 @@ from collections.abc import Sequence
 from market_data import models
 
 
-def create_or_update_ohlc_seq(ohlc_seq: Sequence[models.OHLC], batch_size: int = None) -> None:
+def create_or_update_ohlc_seq(ohlc_seq: Sequence[models.OHLC], batch_size: int | None = None) -> None:
     update_fields = [
         'open',
         'close',

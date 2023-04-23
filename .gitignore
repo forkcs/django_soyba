@@ -109,3 +109,5 @@ redis/
 static/
 
 data/
+
+secrets/

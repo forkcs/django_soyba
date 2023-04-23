@@ -4,7 +4,7 @@ This Django-based web application allows users to download data from crypto exch
 
 ## Features
 - Connects to popular crypto exchanges using APIs to retrieve user data
-- Supports multiple exchanges including Binance, Coinbase, and Kraken
+- Supports multiple exchanges including Binance, Kraken and Bybit
 - Provides the ability to filter and download data based on various criteria including date range and asset type
 - Supports the conversion of data to CSV and Excel formats for easy analysis and manipulation
 
