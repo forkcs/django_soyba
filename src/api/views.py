@@ -1,12 +1,10 @@
 from rest_framework import serializers, viewsets
-from rest_framework.decorators import action
 from rest_framework.request import Request
-from rest_framework.response import Response
 
-from api.serializers import InstrumentSerializer, OHLCSerializer
+from api.serializers import InstrumentSerializer, OhlcSerializer
 from data_sources.models import MarketDataSourceChoices
 from market_data.models.instrument import Instrument
-from market_data.models.ohlc import OHLC
+from market_data.models.ohlc import Ohlc
 
 
 class RequestSerializer(serializers.Serializer):
@@ -24,10 +22,10 @@ class InstrumentsViewSet(viewsets.ReadOnlyModelViewSet):
         return super().get(request, *args, **kwargs)
 
 
-class OHLCViewSet(viewsets.ReadOnlyModelViewSet):
-    model = OHLC
-    serializer_class = OHLCSerializer
-    queryset = OHLC.objects.all()
+class OhlcViewSet(viewsets.ReadOnlyModelViewSet):
+    model = Ohlc
+    serializer_class = OhlcSerializer
+    queryset = Ohlc.objects.all()
 
     def get(self, request: Request, *args, **kwargs):
         serializer = RequestSerializer(data=request.data)

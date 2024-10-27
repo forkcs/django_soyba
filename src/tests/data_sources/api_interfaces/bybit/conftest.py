@@ -4,7 +4,7 @@ from unittest.mock import patch
 import pytest
 
 from data_sources.api_interfaces.bybit.interface import BybitInterface
-from data_sources.api_interfaces.schema import OHLC, Timeframe, TimeframeUnit
+from data_sources.api_interfaces.schema import Ohlc, Timeframe, TimeframeUnit
 
 
 @pytest.fixture
@@ -60,12 +60,17 @@ def raw_klines(start_time: datetime, open: float, high: float, low: float, close
 
 
 @pytest.fixture
-def ohlc_tuple(raw_klines: dict, start_time: datetime) -> tuple[OHLC, ...]:
+def ohlc_tuple(raw_klines: dict, start_time: datetime) -> tuple[Ohlc, ...]:
     with patch("pybit.unified_trading.HTTP.get_kline") as get_kline:
         get_kline.return_value = raw_klines
 
-        return BybitInterface().get_ohlc(
-            symbol='BTCUSD', count=1, timeframe=Timeframe(count=1, unit=TimeframeUnit.SECOND), start_datetime=start_time
+        return tuple(
+            BybitInterface().get_ohlc(
+                symbol="BTCUSD",
+                count=1,
+                timeframe=Timeframe(count=1, unit=TimeframeUnit.SECOND),
+                start_datetime=start_time,
+            ),
         )
 
 

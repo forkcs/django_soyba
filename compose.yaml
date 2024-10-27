@@ -1,26 +1,52 @@
 services:
-  app: &django_base
+  app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: app.Dockerfile
     env_file: .env
-    restart: always
     ports:
       - "${APP_BIND_PORT:-8000}:${APP_PORT:-8000}"
-    volumes:
-      - ./:/app
-    command: python manage.py runserver 0.0.0.0:${APP_PORT:-8000}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl localhost:${APP_PORT}"]
+      start_period: 10s
+      interval: 1s
+      retries: 10
+    restart: always
 
   postgres:
     image: postgres:15.2-alpine
     env_file: .env
-    restart: always
     ports:
-      - "${POSTGRES_BIND_PORT:-5432}:${POSTGRES_PORT:-5432}"
+      - "${POSTGRES_BIND_PORT:-6432}:${POSTGRES_PORT:-5432}"
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      start_period: 5s
+      interval: 1s
+      retries: 10
+    restart: always
 
-  celery_worker:
-    <<: *django_base
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping" ]
+      interval: 5s
+      timeout: 30s
+      retries: 50
+    restart: always
+
+  celery-worker:
+    build:
+      context: .
+      dockerfile: celery-worker.Dockerfile
+    env_file: .env
     ports: []
-    command: /app/bin/celery-entrypoint.sh
+    depends_on:
+      redis:
+        condition: service_healthy

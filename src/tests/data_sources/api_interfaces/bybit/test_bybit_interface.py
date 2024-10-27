@@ -2,13 +2,13 @@ from datetime import datetime
 from unittest.mock import patch
 
 from data_sources.api_interfaces.bybit.interface import BybitInterface
-from data_sources.api_interfaces.schema import OHLC, Timeframe
+from data_sources.api_interfaces.schema import Ohlc, Timeframe
 
 
-class TestGetOHLC:
+class TestGetOhlc:
     def test_returns_valid_ohlc(
         self,
-        ohlc_tuple: tuple[OHLC, ...],
+        ohlc_tuple: tuple[Ohlc, ...],
         start_time: datetime,
         open: float,
         high: float,
@@ -29,7 +29,9 @@ class TestGetOHLC:
 
 class TestGetAvailableInstruments:
     def test_returns_only_available_instruments(
-        self, available_instruments: tuple[str, ...], raw_available_instruments: dict
+        self,
+        available_instruments: tuple[str, ...],
+        raw_available_instruments: dict,
     ):
         with patch("pybit.unified_trading.HTTP.get_instruments_info") as get_instruments_info:
             get_instruments_info.return_value = raw_available_instruments

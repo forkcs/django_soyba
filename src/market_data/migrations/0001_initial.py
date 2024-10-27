@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='OHLC',
+            name='Ohlc',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('open', models.DecimalField(decimal_places=16, max_digits=32)),

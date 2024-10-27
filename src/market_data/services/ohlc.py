@@ -3,19 +3,19 @@ from collections.abc import Sequence
 from market_data import models
 
 
-def create_or_update_ohlc_seq(ohlc_seq: Sequence[models.OHLC], batch_size: int | None = None) -> None:
+def create_or_update_ohlc_seq(ohlc_seq: Sequence[models.Ohlc], batch_size: int | None = None) -> None:
     update_fields = [
-        'open',
-        'close',
-        'low',
-        'high',
+        "open",
+        "close",
+        "low",
+        "high",
     ]
-    unique_fields = ['instrument', 'start_time', 'end_time']
+    unique_fields = ["instrument", "start_time", "end_time"]
 
     for ohlc in ohlc_seq:
         ohlc.full_clean()
 
-    models.OHLC.objects.bulk_create(
+    models.Ohlc.objects.bulk_create(
         ohlc_seq,
         update_conflicts=True,
         update_fields=update_fields,

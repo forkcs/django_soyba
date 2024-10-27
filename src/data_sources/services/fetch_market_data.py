@@ -11,7 +11,7 @@ from market_data.services.ohlc import create_or_update_ohlc_seq
 class MarketDataFetcher:
     def fetch_ohlc_with_min_timeframe(
         self, instrument: market_data_models.Instrument, start_date: date, end_date: date
-    ) -> Sequence[schema.OHLC]:
+    ) -> Sequence[schema.Ohlc]:
         interface = self._get_interface_for_instrument(instrument)
 
         timeframe = self._get_minimal_timeframe(interface)
@@ -35,14 +35,14 @@ class MarketDataFetcher:
 
 
 class MarketDataSaver:
-    def save_ohlc(self, *, instrument_id: int, ohlc_seq: Sequence[schema.OHLC]) -> None:
+    def save_ohlc(self, *, instrument_id: int, ohlc_seq: Sequence[schema.Ohlc]) -> None:
         ohlc_objects = [
             self._construct_ohlc_object(instrument_id=instrument_id, ohlc=ohlc_item) for ohlc_item in ohlc_seq
         ]
         create_or_update_ohlc_seq(ohlc_objects)
 
-    def _construct_ohlc_object(self, *, instrument_id: int, ohlc: schema.OHLC) -> market_data_models.OHLC:
-        return market_data_models.OHLC(
+    def _construct_ohlc_object(self, *, instrument_id: int, ohlc: schema.Ohlc) -> market_data_models.Ohlc:
+        return market_data_models.Ohlc(
             instrument_id=instrument_id,
             start_time=ohlc.start_time,
             end_time=ohlc.end_time,

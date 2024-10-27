@@ -5,7 +5,7 @@ from enum import Enum
 
 
 @dataclass(frozen=True)
-class OHLC:
+class Ohlc:
     open: Decimal
     close: Decimal
     low: Decimal
@@ -16,13 +16,13 @@ class OHLC:
 
 
 class TimeframeUnit(Enum):
-    SECOND = 's'
-    MINUTE = 'm'
-    HOUR = 'h'
-    DAY = 'd'
-    WEEK = 'w'
-    MONTH = 'M'
-    YEAR = 'y'
+    SECOND = "s"
+    MINUTE = "m"
+    HOUR = "h"
+    DAY = "d"
+    WEEK = "w"
+    MONTH = "M"
+    YEAR = "y"
 
 
 @dataclass(frozen=True)

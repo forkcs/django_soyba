@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from market_data.models.instrument import Instrument
-from market_data.models.ohlc import OHLC
+from market_data.models.ohlc import Ohlc
 
 
 class InstrumentSerializer(serializers.Serializer):
@@ -10,7 +10,7 @@ class InstrumentSerializer(serializers.Serializer):
         fields = '__all__'
 
 
-class OHLCSerializer(serializers.Serializer):
+class OhlcSerializer(serializers.Serializer):
     class Meta:
-        model = OHLC
+        model = Ohlc
         fields = '__all__'

@@ -3,10 +3,10 @@ from decimal import Decimal
 
 from pybit.unified_trading import HTTP as PybitSession
 
-from data_sources.api_interfaces.bybit.types import BybitOHLC
+from data_sources.api_interfaces.bybit.types import BybitOhlc
 
 from ..base.interface import DataSourceInterface
-from ..schema import OHLC, Timeframe, TimeframeUnit
+from ..schema import Ohlc, Timeframe, TimeframeUnit
 
 
 class BybitInterface(DataSourceInterface):
@@ -16,8 +16,8 @@ class BybitInterface(DataSourceInterface):
         self.session = PybitSession()
 
     @staticmethod
-    def _construct_ohlc(raw_ohlc: BybitOHLC, end_time: datetime) -> OHLC:
-        return OHLC(
+    def _construct_ohlc(raw_ohlc: BybitOhlc, end_time: datetime) -> Ohlc:
+        return Ohlc(
             open=Decimal(raw_ohlc[1]),
             high=Decimal(raw_ohlc[2]),
             low=Decimal(raw_ohlc[3]),
@@ -32,7 +32,7 @@ class BybitInterface(DataSourceInterface):
 
     def get_ohlc_batch(
         self, *, symbol: str, timeframe: Timeframe, count: int, start_datetime: datetime
-    ) -> tuple[OHLC, ...]:
+    ) -> tuple[Ohlc, ...]:
         minutes = timeframe.interval.seconds / 60
         raw_ohlc_response = self.session.get_kline(
             category='spot', symbol=symbol, interval=f'{minutes}', limit=count, start=start_datetime.timestamp()

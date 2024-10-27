@@ -17,11 +17,11 @@ from django.contrib import admin
 from django.urls import include, path
 from rest_framework import routers
 
-from api.views import InstrumentsViewSet, OHLCViewSet
+from api.views import InstrumentsViewSet, OhlcViewSet
 
 router = routers.DefaultRouter()
 router.register(r'instruments', InstrumentsViewSet)
-router.register(r'ohlc', OHLCViewSet)
+router.register(r'ohlc', OhlcViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

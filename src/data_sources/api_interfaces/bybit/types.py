@@ -1,6 +1,6 @@
 from typing import TypeAlias
 
-BybitOHLC: TypeAlias = tuple[
+BybitOhlc: TypeAlias = tuple[
     str,  # start_time
     str,  # open
     str,  # high

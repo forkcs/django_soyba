@@ -3,10 +3,10 @@ from decimal import Decimal
 
 from binance.spot import Spot
 
-from ..base.interface import DataSourceInterface
-from ..binance.types import BinanceOHLC
-from ..binance.utils import format_binance_timeframe
-from ..schema import OHLC, Timeframe, TimeframeUnit
+from data_sources.api_interfaces.base.interface import DataSourceInterface
+from data_sources.api_interfaces.binance.types import BinanceOhlc
+from data_sources.api_interfaces.binance.utils import format_binance_timeframe
+from data_sources.api_interfaces.schema import Ohlc, Timeframe, TimeframeUnit
 
 
 class BinanceInterface(DataSourceInterface):
@@ -16,11 +16,16 @@ class BinanceInterface(DataSourceInterface):
         self.client = Spot()
 
     def get_ohlc_batch(
-        self, *, symbol: str, timeframe: Timeframe, count: int, start_datetime: datetime
-    ) -> tuple[OHLC, ...]:
+        self,
+        *,
+        symbol: str,
+        timeframe: Timeframe,
+        count: int,
+        start_datetime: datetime,
+    ) -> tuple[Ohlc, ...]:
         formatted_timeframe = format_binance_timeframe(timeframe)
 
-        raw_ohlc_list: tuple[BinanceOHLC] = self.client.klines(
+        raw_ohlc_list: tuple[BinanceOhlc, ...] = self.client.klines(
             symbol,
             formatted_timeframe,
             limit=count,
@@ -30,8 +35,8 @@ class BinanceInterface(DataSourceInterface):
         return tuple(self._construct_ohlc(raw_ohlc) for raw_ohlc in raw_ohlc_list)
 
     @staticmethod
-    def _construct_ohlc(raw_ohlc: BinanceOHLC) -> OHLC:
-        return OHLC(
+    def _construct_ohlc(raw_ohlc: BinanceOhlc) -> Ohlc:
+        return Ohlc(
             open=Decimal(raw_ohlc[1]),
             high=Decimal(raw_ohlc[2]),
             low=Decimal(raw_ohlc[3]),
@@ -42,14 +47,13 @@ class BinanceInterface(DataSourceInterface):
 
     def get_available_instruments(self) -> tuple[str, ...]:
         def instrument_is_active(instrument):
-            return instrument['status'] == 'TRADING'
+            return instrument["status"] == "TRADING"
 
         def instrument_get_symbol(instrument):
-            return instrument['symbol']
+            return instrument["symbol"]
 
         raw_instruments = self.client.exchange_info(permissions=["SPOT"])["symbols"]
-        instruments = filter(instrument_is_active, raw_instruments)
-        return tuple(map(instrument_get_symbol, instruments))
+        return tuple(instrument_get_symbol(i) for i in raw_instruments if instrument_is_active(i))
 
     def get_available_timeframes(self) -> tuple[Timeframe, ...]:
         return (
