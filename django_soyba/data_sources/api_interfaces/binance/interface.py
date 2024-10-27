@@ -3,10 +3,10 @@ from decimal import Decimal
 
 from binance.spot import Spot
 
-from data_sources.api_interfaces.base.interface import DataSourceInterface
-from data_sources.api_interfaces.binance.types import BinanceOhlc
-from data_sources.api_interfaces.binance.utils import format_binance_timeframe
-from data_sources.api_interfaces.schema import Ohlc, Timeframe, TimeframeUnit
+from django_soyba.data_sources.api_interfaces.base.interface import DataSourceInterface
+from django_soyba.data_sources.api_interfaces.binance.types import BinanceOhlc
+from django_soyba.data_sources.api_interfaces.binance.utils import format_binance_timeframe
+from django_soyba.data_sources.api_interfaces.schema import Ohlc, Timeframe, TimeframeUnit
 
 
 class BinanceInterface(DataSourceInterface):

@@ -1,10 +1,10 @@
+from api.serializers import InstrumentSerializer, OhlcSerializer
 from rest_framework import serializers, viewsets
 from rest_framework.request import Request
 
-from api.serializers import InstrumentSerializer, OhlcSerializer
-from data_sources.models import MarketDataSourceChoices
-from market_data.models.instrument import Instrument
-from market_data.models.ohlc import Ohlc
+from django_soyba.data_sources.models import MarketDataSourceChoices
+from django_soyba.market_data.models.instrument import Instrument
+from django_soyba.market_data.models.ohlc import Ohlc
 
 
 class RequestSerializer(serializers.Serializer):

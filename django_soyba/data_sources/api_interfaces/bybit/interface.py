@@ -3,10 +3,9 @@ from decimal import Decimal
 
 from pybit.unified_trading import HTTP as PybitSession
 
-from data_sources.api_interfaces.bybit.types import BybitOhlc
-
-from ..base.interface import DataSourceInterface
-from ..schema import Ohlc, Timeframe, TimeframeUnit
+from django_soyba.data_sources.api_interfaces.base.interface import DataSourceInterface
+from django_soyba.data_sources.api_interfaces.bybit.types import BybitOhlc
+from django_soyba.data_sources.api_interfaces.schema import Ohlc, Timeframe, TimeframeUnit
 
 
 class BybitInterface(DataSourceInterface):
@@ -35,7 +34,7 @@ class BybitInterface(DataSourceInterface):
     ) -> tuple[Ohlc, ...]:
         minutes = timeframe.interval.seconds / 60
         raw_ohlc_response = self.session.get_kline(
-            category='spot', symbol=symbol, interval=f'{minutes}', limit=count, start=start_datetime.timestamp()
+            category="spot", symbol=symbol, interval=f"{minutes}", limit=count, start=start_datetime.timestamp()
         )
         end_times = tuple(start_datetime + (i + 1) * timeframe.interval for i in range(count))
         raw_ohlc_list = raw_ohlc_response["result"]["list"]
@@ -48,7 +47,7 @@ class BybitInterface(DataSourceInterface):
         def instrument_get_symbol(instrument: dict) -> str:
             return instrument["symbol"]
 
-        raw_instruments = self._get_instruments_info(category='spot')["result"]["list"]
+        raw_instruments = self._get_instruments_info(category="spot")["result"]["list"]
         return tuple(map(instrument_get_symbol, filter(instrument_is_active, raw_instruments)))
 
     def get_available_timeframes(self) -> tuple[Timeframe, ...]:

@@ -88,26 +88,16 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-'src/tests/*' = [
+'tests/*' = [
   'S101',
   'S105',
   'S106',
   'S107',
   'S311',
 ]
-'dockerfiles/*' = [
-  'S603',
-]
-
-'alembic/**/*' = [
-  'D400',
-  'D415',
-
-  'INP001',
-]
 
 [tool.pyright]
-include = ["src"]
+include = ["django_soyba", "tests"]
 pythonVersion = "3.11"
 pythonPlatform = "Linux"
 

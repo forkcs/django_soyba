@@ -1,4 +1,4 @@
-from data_sources.api_interfaces.schema import Timeframe
+from django_soyba.data_sources.api_interfaces.schema import Timeframe
 
 
 def format_binance_timeframe(timeframe: Timeframe) -> str:

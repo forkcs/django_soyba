@@ -1,16 +1,20 @@
 from collections.abc import Sequence
 from datetime import date, datetime
 
-import data_sources.api_interfaces.schema as schema
 import market_data.models as market_data_models
-from data_sources.api_interfaces.base.interface import DataSourceInterface
-from data_sources.helpers import get_interface_class_by_data_source_name
 from market_data.services.ohlc import create_or_update_ohlc_seq
+
+from django_soyba.data_sources.api_interfaces import schema
+from django_soyba.data_sources.api_interfaces.base.interface import DataSourceInterface
+from django_soyba.data_sources.helpers import get_interface_class_by_data_source_name
 
 
 class MarketDataFetcher:
     def fetch_ohlc_with_min_timeframe(
-        self, instrument: market_data_models.Instrument, start_date: date, end_date: date
+        self,
+        instrument: market_data_models.Instrument,
+        start_date: date,
+        end_date: date,
     ) -> Sequence[schema.Ohlc]:
         interface = self._get_interface_for_instrument(instrument)
 
@@ -19,7 +23,10 @@ class MarketDataFetcher:
         start_datetime = datetime(start_date.year, start_date.month, start_date.day)
 
         return interface.get_ohlc(
-            symbol=instrument.symbol, timeframe=timeframe, count=count, start_datetime=start_datetime
+            symbol=instrument.symbol,
+            timeframe=timeframe,
+            count=count,
+            start_datetime=start_datetime,
         )
 
     def _get_interface_for_instrument(self, instrument: market_data_models.Instrument) -> DataSourceInterface:

@@ -2,7 +2,7 @@ from collections.abc import Collection, Iterable, Sequence
 from datetime import datetime
 from typing import ClassVar, final
 
-from data_sources.api_interfaces.schema import Ohlc, Timeframe
+from django_soyba.data_sources.api_interfaces.schema import Ohlc, Timeframe
 
 
 class DataSourceInterface:

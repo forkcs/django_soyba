@@ -51,7 +51,7 @@ def format_():
 
 @typer.command()
 def test():
-    sh("pytest src/tests")
+    sh("pytest tests")
 
 
 @typer.command()

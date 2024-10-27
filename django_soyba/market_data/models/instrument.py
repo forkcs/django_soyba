@@ -1,6 +1,6 @@
 from django.db import models
 
-from data_sources.models import MarketDataSourceChoices
+from django_soyba.data_sources.models import MarketDataSourceChoices
 
 
 class Instrument(models.Model):
