@@ -26,3 +26,6 @@ This Django-based web application allows users to download data from crypto exch
 
 ## License
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+
+## CLI usage
+See `python -m django_soyba --help`
