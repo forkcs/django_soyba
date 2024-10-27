@@ -1,8 +1,8 @@
 from datetime import datetime
 from unittest.mock import patch
 
-from data_sources.api_interfaces.bybit.interface import BybitInterface
-from data_sources.api_interfaces.schema import Ohlc, Timeframe
+from django_soyba.data_sources.api_interfaces.bybit.interface import BybitInterface
+from django_soyba.data_sources.api_interfaces.schema import Ohlc, Timeframe
 
 
 class TestGetOhlc:

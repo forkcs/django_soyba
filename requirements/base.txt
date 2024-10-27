@@ -1,9 +1,0 @@
-django>=4,<5
-djangorestframework
-psycopg2-binary==2.9.6
-djangorestframework
-celery
-django-celery
-gunicorn
-binance-connector==2.0.0
-pybit

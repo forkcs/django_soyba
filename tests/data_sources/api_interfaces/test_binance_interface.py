@@ -6,8 +6,8 @@ from hypothesis import assume, given
 from hypothesis import strategies as st
 from pytest_mock import MockerFixture
 
-from data_sources.api_interfaces.binance.interface import BinanceInterface
-from data_sources.api_interfaces.schema import Ohlc, Timeframe, TimeframeUnit
+from django_soyba.data_sources.api_interfaces.binance.interface import BinanceInterface
+from django_soyba.data_sources.api_interfaces.schema import Ohlc, Timeframe, TimeframeUnit
 
 
 class TestGetOhlc:

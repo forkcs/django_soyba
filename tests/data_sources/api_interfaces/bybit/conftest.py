@@ -3,8 +3,8 @@ from unittest.mock import patch
 
 import pytest
 
-from data_sources.api_interfaces.bybit.interface import BybitInterface
-from data_sources.api_interfaces.schema import Ohlc, Timeframe, TimeframeUnit
+from django_soyba.data_sources.api_interfaces.bybit.interface import BybitInterface
+from django_soyba.data_sources.api_interfaces.schema import Ohlc, Timeframe, TimeframeUnit
 
 
 @pytest.fixture

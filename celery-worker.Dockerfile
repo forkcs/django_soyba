@@ -24,4 +24,4 @@ ENV VIRTUAL_ENV=/app/.venv
 ENV PATH="/app/.venv/bin:$PATH"
 WORKDIR /app/src
 
-ENTRYPOINT [ "./celery-worker.sh" ]
+ENTRYPOINT [ "./django_soyba/__main__.py" ]
